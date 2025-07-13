@@ -1,8 +1,10 @@
 package io.javabrains.moviecatalogservice.resources;
 
+
 import io.javabrains.moviecatalogservice.models.CatalogItem;
 import io.javabrains.moviecatalogservice.models.Movie;
 import io.javabrains.moviecatalogservice.models.Rating;
+import io.javabrains.moviecatalogservice.models.UserRating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,13 +39,20 @@ public class MovieCatalogResource {
 
 
         //get all rated movies IDs
-        List<Rating> ratings= Arrays.asList(
-            new Rating("1234", 4),
-            new Rating("5678", 3)
-        );
-        return ratings.stream().map(rating->{
-            Movie movie=restTemplate.getForObject("http://localhost:8082/movies/"+rating.getMovieId(), Movie.class);
-//            Movie movie = webClientBuilder.build()
+//        List<Rating> rantings= restTemplate.getForObject("http://rating-data-service/ratingsdata/users"+userID, UserRating.class);
+
+        UserRating ratings= restTemplate.getForObject("http://rating-data-service/ratingsdata/users/"+userID, UserRating.class);
+
+
+//        List<Rating> ratings= Arrays.asList(
+//            new Rating("1234", 4),
+//            new Rating("5678", 3)
+//        );
+        return ratings.getUserRating().stream().map(rating->{
+                    //for each movie ID, call movie info services and get details
+
+                Movie movie=restTemplate.getForObject("http://movie-info-service/movies/"+rating.getMovieId(), Movie.class);
+//              Movie movie = webClientBuilder.build()
 //                    .get()
 //                    .uri("http://localhost:8082/movies/" + rating.getMovieId())
 //                    .retrieve()
